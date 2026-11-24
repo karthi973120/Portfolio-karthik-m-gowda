@@ -1,142 +1,72 @@
-"use client";
+'use client';
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Progress } from '@/components/ui/progress';
-import { SKILLS } from '@/lib/constants';
+import { Monitor, Smartphone, Server, Layers, Cloud, ShieldCheck, Brain, Wrench } from 'lucide-react';
+import { SKILL_CATEGORIES } from '@/lib/constants';
 import { fadeIn, staggerContainer } from '@/lib/animations';
-import { Code, Server, FileCode, Layers, Database, Github as Git, Terminal, Cloud, LayoutGrid, AlertCircle } from 'lucide-react';
 
-const SkillIcon = ({ name }: { name: string }) => {
-  const icons: Record<string, JSX.Element> = {
-    'React': <Code className="w-5 h-5" />,
-    'Next.js': <Layers className="w-5 h-5" />,
-    'TypeScript': <FileCode className="w-5 h-5" />,
-    'CSS/SCSS': <LayoutGrid className="w-5 h-5" />,
-    'Tailwind CSS': <LayoutGrid className="w-5 h-5" />,
-    'Node.js': <Server className="w-5 h-5" />,
-    'Express': <Server className="w-5 h-5" />,
-    'MongoDB': <Database className="w-5 h-5" />,
-    'PostgreSQL': <Database className="w-5 h-5" />,
-    'GraphQL': <Database className="w-5 h-5" />,
-    'Git': <Git className="w-5 h-5" />,
-    'Docker': <Terminal className="w-5 h-5" />,
-    'AWS': <Cloud className="w-5 h-5" />,
-    'CI/CD': <Terminal className="w-5 h-5" />,
-    'Testing': <AlertCircle className="w-5 h-5" />,
-  };
+const ICON_MAP: Record<string, any> = {
+  Monitor, Smartphone, Server, Layers, Cloud, ShieldCheck, Brain, Wrench,
+};
 
-  return icons[name] || <Code className="w-5 h-5" />;
+const COLOR_MAP: Record<string, { icon: string; ring: string; bg: string }> = {
+  cyan: { icon: 'text-[rgb(var(--accent-cyan))]', ring: 'border-[rgba(0,212,255,0.2)]', bg: 'bg-[rgba(0,212,255,0.08)]' },
+  violet: { icon: 'text-[rgb(var(--accent-violet))]', ring: 'border-[rgba(139,92,246,0.2)]', bg: 'bg-[rgba(139,92,246,0.08)]' },
+  amber: { icon: 'text-[rgb(var(--accent-amber))]', ring: 'border-[rgba(245,158,11,0.2)]', bg: 'bg-[rgba(245,158,11,0.08)]' },
 };
 
 export const Skills = () => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const ref = useRef<HTMLElement>(null);
+  const isInView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section
-      id="skills"
-      ref={sectionRef}
-      className="py-20 md:py-32"
-    >
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        animate={isInView ? 'show' : 'hidden'}
-        className="container mx-auto px-4 md:px-6"
-      >
-        <motion.div
-          variants={fadeIn('up', 0.3)}
-          className="flex flex-col items-center mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">My Skills</h2>
-          <div className="w-20 h-1.5 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-full" />
-          <p className="mt-6 text-center text-muted-foreground max-w-2xl">
-            Here are my technical skills and areas of expertise that I've developed and refined
-            over the course of my professional journey.
-          </p>
+    <section id="skills" ref={ref} className="py-24 md:py-32">
+      <div className="section-container">
+        <motion.div variants={staggerContainer} initial="hidden" animate={isInView ? 'show' : 'hidden'}>
+          <motion.div variants={fadeIn('up', 0)} className="flex items-center gap-3 mb-4">
+            <div className="h-px w-8 bg-[rgb(var(--accent-cyan))]" />
+            <span className="text-xs font-mono font-medium text-[rgb(var(--accent-cyan))] tracking-widest uppercase">Technical Skills</span>
+          </motion.div>
+          <motion.div variants={fadeIn('up', 0.1)} className="mb-16">
+            <h2 className="section-heading mb-4">
+              A <span className="gradient-text">full-stack</span> approach to engineering.
+            </h2>
+            <p className="text-[rgb(var(--text-muted))] max-w-2xl">
+              Eight categories of expertise, built over 8+ years across frontend, mobile, backend, DevOps, and AI/ML. No arbitrary percentages — just honest groupings of what I build with.
+            </p>
+          </motion.div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {SKILL_CATEGORIES.map((category, idx) => {
+              const Icon = ICON_MAP[category.icon] || Monitor;
+              const c = COLOR_MAP[category.color] || COLOR_MAP.cyan;
+              return (
+                <motion.div
+                  key={category.id}
+                  variants={fadeIn('up', 0.05 * idx)}
+                  className="glass-card p-5 hover:translate-y-[-2px] transition-transform duration-300 group"
+                >
+                  {/* Category header */}
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 border ${c.ring} ${c.bg}`}>
+                    <Icon size={18} className={c.icon} />
+                  </div>
+                  <h3 className="font-semibold text-sm text-[rgb(var(--text-primary))] mb-3">{category.label}</h3>
+
+                  {/* Skills list */}
+                  <div className="flex flex-wrap gap-1.5">
+                    {category.skills.map((skill) => (
+                      <span key={skill} className="skill-badge text-[11px]">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          <motion.div 
-            variants={fadeIn('up', 0.4)} 
-            className="bg-card rounded-xl p-6 shadow-sm border border-border"
-          >
-            <div className="flex items-center mb-6">
-              <div className="w-10 h-10 rounded-full bg-pink-500/10 flex items-center justify-center mr-3">
-                <Code className="w-5 h-5 text-pink-500" />
-              </div>
-              <h3 className="text-xl font-semibold">Frontend</h3>
-            </div>
-            <div className="space-y-6">
-              {SKILLS.frontend.map((skill, index) => (
-                <div key={skill.name}>
-                  <div className="flex justify-between items-center mb-2">
-                    <div className="flex items-center">
-                      <span className="mr-2"><SkillIcon name={skill.name} /></span>
-                      <span>{skill.name}</span>
-                    </div>
-                    <span className="text-sm text-muted-foreground">{skill.level}%</span>
-                  </div>
-                  <Progress value={skill.level} className="h-2"  />
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          <motion.div 
-            variants={fadeIn('up', 0.5)} 
-            className="bg-card rounded-xl p-6 shadow-sm border border-border"
-          >
-            <div className="flex items-center mb-6">
-              <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center mr-3">
-                <Server className="w-5 h-5 text-purple-500" />
-              </div>
-              <h3 className="text-xl font-semibold">Backend</h3>
-            </div>
-            <div className="space-y-6">
-              {SKILLS.backend.map((skill) => (
-                <div key={skill.name}>
-                  <div className="flex justify-between items-center mb-2">
-                    <div className="flex items-center">
-                      <span className="mr-2"><SkillIcon name={skill.name} /></span>
-                      <span>{skill.name}</span>
-                    </div>
-                    <span className="text-sm text-muted-foreground">{skill.level}%</span>
-                  </div>
-                  <Progress value={skill.level} className="h-2"  />
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          <motion.div 
-            variants={fadeIn('up', 0.6)} 
-            className="bg-card rounded-xl p-6 shadow-sm border border-border"
-          >
-            <div className="flex items-center mb-6">
-              <div className="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center mr-3">
-                <Terminal className="w-5 h-5 text-indigo-500" />
-              </div>
-              <h3 className="text-xl font-semibold">DevOps & Tools</h3>
-            </div>
-            <div className="space-y-6">
-              {SKILLS.other.map((skill) => (
-                <div key={skill.name}>
-                  <div className="flex justify-between items-center mb-2">
-                    <div className="flex items-center">
-                      <span className="mr-2"><SkillIcon name={skill.name} /></span>
-                      <span>{skill.name}</span>
-                    </div>
-                    <span className="text-sm text-muted-foreground">{skill.level}%</span>
-                  </div>
-                  <Progress value={skill.level} className="h-2"  />
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </motion.div>
+      </div>
     </section>
   );
 };

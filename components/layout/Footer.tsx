@@ -1,107 +1,29 @@
-"use client";
+'use client';
 
-import Link from 'next/link';
-import { SITE_CONFIG, NAV_LINKS } from '@/lib/constants';
-import { Github, Linkedin, Twitter, Mail, ArrowUp,Instagram } from 'lucide-react';
+import { Github, Linkedin, Twitter, ArrowUp } from 'lucide-react';
+import { SITE_CONFIG } from '@/lib/constants';
 
 export const Footer = () => {
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-  };
-
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
   return (
-    <footer className="bg-secondary py-12">
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-          <div className="mb-8 md:mb-0">
-            <Link href="#home" className="text-xl font-bold">
-              {SITE_CONFIG.name}
-            </Link>
-            <p className="mt-2 text-muted-foreground max-w-md">
-              {SITE_CONFIG.description}
-            </p>
-          </div>
-          
-          <div className="flex flex-col items-center md:items-end">
-            <button
-              onClick={scrollToTop}
-              className="flex items-center text-sm font-medium hover:text-primary transition-colors mb-4"
-              aria-label="Back to top"
-            >
-              <span className="mr-2">Back to top</span>
-              <ArrowUp size={16} />
-            </button>
-            <div className="flex space-x-6">
-              <a
-                href={SITE_CONFIG.socialLinks.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-primary transition-colors"
-                aria-label="GitHub"
-              >
-                <Github size={20} />
-              </a>
-              <a
-                href={SITE_CONFIG.socialLinks.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-primary transition-colors"
-                aria-label="LinkedIn"
-              >
-                <Linkedin size={20} />
-              </a>
-              <a
-                href={SITE_CONFIG.socialLinks.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-primary transition-colors"
-                aria-label="Twitter"
-              >
-                <Twitter size={20} />
-              </a>
-              <a
-                href={SITE_CONFIG.socialLinks.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-primary transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram size={20} />
-              </a>
-              <a
-                href="#contact"
-                className="hover:text-primary transition-colors"
-                aria-label="Email"
-              >
-                <Mail size={20} />
-              </a>
+    <footer className="border-t border-white/[0.06] bg-[rgba(10,10,15,0.8)]">
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-10">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[rgb(var(--accent-cyan))] to-[rgb(var(--accent-violet))] flex items-center justify-center font-mono font-bold text-xs text-black">KG</div>
+            <div>
+              <p className="font-semibold text-sm text-[rgb(var(--text-primary))]">{SITE_CONFIG.name}</p>
+              <p className="text-xs text-[rgb(var(--text-muted))]">{SITE_CONFIG.title}</p>
             </div>
           </div>
-        </div>
-        
-        <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-border">
-          <div className="mb-4 md:mb-0">
-            <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} {SITE_CONFIG.name}. All rights reserved.
-            </p>
+          <p className="text-sm text-[rgb(var(--text-muted))] order-last md:order-none">© {new Date().getFullYear()} Karthik M Gowda. All rights reserved.</p>
+          <div className="flex items-center gap-3">
+            <a href={SITE_CONFIG.socialLinks.github} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg text-[rgb(var(--text-muted))] hover:text-[rgb(var(--text-primary))] hover:bg-white/[0.06] transition-all duration-200" aria-label="GitHub"><Github size={18} /></a>
+            <a href={SITE_CONFIG.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg text-[rgb(var(--text-muted))] hover:text-[rgb(var(--accent-cyan))] hover:bg-[rgba(0,212,255,0.08)] transition-all duration-200" aria-label="LinkedIn"><Linkedin size={18} /></a>
+            <a href={SITE_CONFIG.socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg text-[rgb(var(--text-muted))] hover:text-[rgb(var(--text-primary))] hover:bg-white/[0.06] transition-all duration-200" aria-label="Twitter"><Twitter size={18} /></a>
+            <div className="w-px h-5 bg-white/10 mx-1" />
+            <button onClick={scrollToTop} className="p-2 rounded-lg text-[rgb(var(--text-muted))] hover:text-[rgb(var(--accent-cyan))] hover:bg-[rgba(0,212,255,0.08)] transition-all duration-200" aria-label="Back to top"><ArrowUp size={18} /></button>
           </div>
-          <nav>
-            <ul className="flex flex-wrap justify-center gap-6">
-              {NAV_LINKS.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
         </div>
       </div>
     </footer>

@@ -1,284 +1,101 @@
-"use client";
+'use client';
 
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
+import { Mail, Phone, MapPin, Github, Linkedin, Twitter, Send, CheckCircle } from 'lucide-react';
+import { SITE_CONFIG } from '@/lib/constants';
 import { fadeIn, staggerContainer } from '@/lib/animations';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Mail, Phone, MapPin, Send, CheckCircle2 } from 'lucide-react';
-
-const contactFormSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  email: z.string().email({ message: "Please enter a valid email address." }),
-  subject: z.string().min(5, { message: "Subject must be at least 5 characters." }),
-  message: z.string().min(10, { message: "Message must be at least 10 characters." }),
-});
-
-type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 export const Contact = () => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const ref = useRef<HTMLElement>(null);
+  const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
 
-  const form = useForm<ContactFormValues>({
-    resolver: zodResolver(contactFormSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
-    },
-  });
-
-  function onSubmit(data: ContactFormValues) {
-    // In a real application, this would send the form data to a server
-    console.log(data);
-    setIsSubmitted(true);
-  }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('sending');
+    await new Promise((r) => setTimeout(r, 1200));
+    setStatus('sent');
+    setTimeout(() => setStatus('idle'), 4000);
+    setForm({ name: '', email: '', message: '' });
+  };
 
   return (
-    <section
-      id="contact"
-      ref={sectionRef}
-      className="py-20 md:py-32 bg-muted/30"
-    >
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        animate={isInView ? 'show' : 'hidden'}
-        className="container mx-auto px-4 md:px-6"
-      >
-        <motion.div
-          variants={fadeIn('up', 0.3)}
-          className="flex flex-col items-center mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Get In Touch</h2>
-          <div className="w-20 h-1.5 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-full" />
-          <p className="mt-6 text-center text-muted-foreground max-w-2xl">
-            Have a project in mind or want to discuss potential opportunities? I'd love to hear from you.
-            Fill out the form below, and I'll get back to you as soon as possible.
-          </p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          <motion.div variants={fadeIn('right', 0.4)}>
-            <div className="space-y-8">
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 rounded-full bg-pink-500/10 flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-5 h-5 text-pink-500" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-medium mb-1">Email</h3>
-                  <p className="text-muted-foreground">karthi973120@gmail.com</p>
-                  <a href="mailto:contact@yourdomain.com" className="text-sm text-primary hover:underline mt-1 inline-block">
-                    Send a message
-                  </a>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center flex-shrink-0">
-                  <Phone className="w-5 h-5 text-purple-500" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-medium mb-1">Phone</h3>
-                  <p className="text-muted-foreground">(+91) 9620003983</p>
-                  <a href="tel:+15551234567" className="text-sm text-primary hover:underline mt-1 inline-block">
-                    Call me
-                  </a>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 rounded-full bg-indigo-500/10 flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-5 h-5 text-indigo-500" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-medium mb-1">Location</h3>
-                  <p className="text-muted-foreground">Bengaluru, KA</p>
-                  <p className="text-sm text-primary mt-1">Available for remote work worldwide</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-12 bg-card rounded-xl p-6 shadow-sm border border-border">
-              <h3 className="text-lg font-medium mb-3">Let's Connect</h3>
-              <p className="text-muted-foreground mb-4">
-                Follow me on social media or check out my work on GitHub to see what I've been up to.
-              </p>
-              <div className="flex space-x-4">
-                <a
-                  href="https://github.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-background border border-border flex items-center justify-center hover:bg-secondary transition-colors"
-                  aria-label="GitHub"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-                  </svg>
-                </a>
-                <a
-                  href="https://linkedin.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-background border border-border flex items-center justify-center hover:bg-secondary transition-colors"
-                  aria-label="LinkedIn"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                    <rect x="2" y="9" width="4" height="12"></rect>
-                    <circle cx="4" cy="4" r="2"></circle>
-                  </svg>
-                </a>
-                <a
-                  href="https://twitter.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-background border border-border flex items-center justify-center hover:bg-secondary transition-colors"
-                  aria-label="Twitter"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
-                  </svg>
-                </a>
-              </div>
-            </div>
+    <section id="contact" ref={ref} className="py-24 md:py-32">
+      <div className="section-container">
+        <motion.div variants={staggerContainer} initial="hidden" animate={isInView ? 'show' : 'hidden'}>
+          <motion.div variants={fadeIn('up', 0)} className="flex items-center gap-3 mb-4">
+            <div className="h-px w-8 bg-[rgb(var(--accent-cyan))]" />
+            <span className="text-xs font-mono font-medium text-[rgb(var(--accent-cyan))] tracking-widest uppercase">Contact</span>
+          </motion.div>
+          <motion.div variants={fadeIn('up', 0.1)} className="mb-14 max-w-2xl">
+            <h2 className="section-heading mb-4">Let's build something <span className="gradient-text">great together.</span></h2>
+            <p className="text-[rgb(var(--text-muted))]">
+              I'm currently open to Senior Software Engineer, Staff Engineer, and Frontend Architect opportunities. If you're working on something interesting or want to connect — I'd love to hear from you.
+            </p>
           </motion.div>
 
-          <motion.div variants={fadeIn('left', 0.5)}>
-            <div className="bg-card rounded-xl p-8 shadow-sm border border-border">
-              {!isSubmitted ? (
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Your name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Your email address" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="subject"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Subject</FormLabel>
-                          <FormControl>
-                            <Input placeholder="What is this regarding?" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="message"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Message</FormLabel>
-                          <FormControl>
-                            <Textarea 
-                              placeholder="Tell me about your project or inquiry..." 
-                              className="min-h-32"
-                              {...field} 
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button type="submit" className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:opacity-90 transition-opacity">
-                      <Send className="mr-2 h-4 w-4" /> Send Message
-                    </Button>
-                  </form>
-                </Form>
-              ) : (
-                <div className="flex flex-col items-center justify-center py-10">
-                  <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center mb-4">
-                    <CheckCircle2 className="w-8 h-8 text-green-500" />
+          <div className="grid lg:grid-cols-5 gap-10 lg:gap-16 items-start">
+            <motion.div variants={fadeIn('up', 0.15)} className="lg:col-span-2 space-y-4">
+              <div className="flex items-center gap-2 px-4 py-3 rounded-xl border border-[rgba(0,212,255,0.2)] bg-[rgba(0,212,255,0.05)]">
+                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-sm font-medium text-[rgb(var(--text-secondary))]">{SITE_CONFIG.availability}</span>
+              </div>
+              {[
+                { icon: Mail, label: 'Email', value: SITE_CONFIG.email, href: `mailto:${SITE_CONFIG.email}` },
+                { icon: Phone, label: 'Phone', value: SITE_CONFIG.phone, href: `tel:${SITE_CONFIG.phone}` },
+                { icon: MapPin, label: 'Location', value: SITE_CONFIG.location, href: null },
+              ].map((item) => {
+                const Icon = item.icon;
+                const inner = (
+                  <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.04] transition-colors">
+                    <div className="w-9 h-9 rounded-lg bg-[rgba(0,212,255,0.08)] border border-[rgba(0,212,255,0.15)] flex items-center justify-center shrink-0">
+                      <Icon size={16} className="text-[rgb(var(--accent-cyan))]" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-[rgb(var(--text-muted))]">{item.label}</p>
+                      <p className="text-sm font-medium text-[rgb(var(--text-primary))]">{item.value}</p>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Message Sent!</h3>
-                  <p className="text-center text-muted-foreground mb-6">
-                    Thank you for reaching out. I'll get back to you as soon as possible.
-                  </p>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      form.reset();
-                      setIsSubmitted(false);
-                    }}
-                  >
-                    Send Another Message
-                  </Button>
+                );
+                return item.href ? <a key={item.label} href={item.href} className="block">{inner}</a> : <div key={item.label}>{inner}</div>;
+              })}
+              <div className="pt-4 border-t border-white/[0.06]">
+                <p className="text-xs text-[rgb(var(--text-muted))] mb-3">Find me on</p>
+                <div className="flex gap-3">
+                  {[{ icon: Github, href: SITE_CONFIG.socialLinks.github, label: 'GitHub' }, { icon: Linkedin, href: SITE_CONFIG.socialLinks.linkedin, label: 'LinkedIn' }, { icon: Twitter, href: SITE_CONFIG.socialLinks.twitter, label: 'Twitter' }].map(({ icon: Icon, href, label }) => (
+                    <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="w-10 h-10 rounded-xl glass-card flex items-center justify-center text-[rgb(var(--text-muted))] hover:text-[rgb(var(--accent-cyan))] hover:border-[rgba(0,212,255,0.2)] transition-all duration-200"><Icon size={18} /></a>
+                  ))}
                 </div>
-              )}
-            </div>
-          </motion.div>
-        </div>
-      </motion.div>
+              </div>
+            </motion.div>
+
+            <motion.div variants={fadeIn('up', 0.2)} className="lg:col-span-3">
+              <form onSubmit={handleSubmit} className="glass-card p-6 md:p-8 space-y-5">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {[{ label: 'Name', key: 'name', type: 'text', placeholder: 'Your name' }, { label: 'Email', key: 'email', type: 'email', placeholder: 'your@email.com' }].map(({ label, key, type, placeholder }) => (
+                    <div key={key}>
+                      <label className="block text-xs font-medium text-[rgb(var(--text-muted))] mb-2">{label}</label>
+                      <input type={type} required value={form[key as keyof typeof form]} onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))} placeholder={placeholder} className="w-full px-4 py-3 rounded-xl bg-[rgba(255,255,255,0.03)] border border-white/[0.08] text-sm text-[rgb(var(--text-primary))] placeholder:text-[rgb(var(--text-muted))] focus:outline-none focus:border-[rgba(0,212,255,0.4)] focus:bg-[rgba(0,212,255,0.03)] transition-all duration-200" />
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-[rgb(var(--text-muted))] mb-2">Message</label>
+                  <textarea required rows={5} value={form.message} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))} placeholder="Tell me about your project, role, or just say hi..." className="w-full px-4 py-3 rounded-xl bg-[rgba(255,255,255,0.03)] border border-white/[0.08] text-sm text-[rgb(var(--text-primary))] placeholder:text-[rgb(var(--text-muted))] focus:outline-none focus:border-[rgba(0,212,255,0.4)] focus:bg-[rgba(0,212,255,0.03)] transition-all duration-200 resize-none" />
+                </div>
+                <button type="submit" disabled={status !== 'idle'} className="w-full btn-primary justify-center py-3.5 disabled:opacity-70 disabled:cursor-not-allowed">
+                  {status === 'idle' && <><Send size={16} /> Send Message</>}
+                  {status === 'sending' && <>Sending...</>}
+                  {status === 'sent' && <><CheckCircle size={16} /> Message Sent!</>}
+                </button>
+                <p className="text-xs text-center text-[rgb(var(--text-muted))]">Or email me directly at <a href={`mailto:${SITE_CONFIG.email}`} className="text-[rgb(var(--accent-cyan))] hover:underline">{SITE_CONFIG.email}</a></p>
+              </form>
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
     </section>
   );
 };
